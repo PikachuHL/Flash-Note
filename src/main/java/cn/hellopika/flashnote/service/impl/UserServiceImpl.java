@@ -202,4 +202,64 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
+    /**
+     * 用户设置
+     * @param dto
+     */
+    @Override
+    public void userSetting(UserSettingDto dto) {
+        // 根据 id 获取用户对象
+        User user = userMapper.selectById(dto.getUserId());
+        if(user == null){
+            throw new ServiceException("用户不存在");
+        }
+
+        // 判断 nickName 和 password 是否空，不为空表示要修改
+        if(StringUtils.isNotEmpty(dto.getNickName())){
+            user.setNickName(dto.getNickName());
+            userMapper.updateById(user);
+        }
+        if(StringUtils.isNoneEmpty(dto.getOldPassword(), dto.getNewPassword(), dto.getRepeatNewPassword())){
+            // 判断旧密码是否输入正确
+            if(!StringUtils.equals(user.getPassword(), DigestUtils.md5Hex(SysConst.USER_PASSWORD_SALT+dto.getOldPassword()))){
+                throw new ServiceException("旧密码输入错误");
+            }
+
+            // 判断两次新密码输入是否一致
+            if(!StringUtils.equals(dto.getNewPassword(), dto.getRepeatNewPassword())){
+                throw new ServiceException("两次新密码输入不一致，请重新输入");
+            }
+
+            // 修改密码
+            user.setPassword(DigestUtils.md5Hex(SysConst.USER_PASSWORD_SALT+dto.getNewPassword()));
+            userMapper.updateById(user);
+        }
+    }
+
+    /**
+     * 用户信息
+     * @param userId
+     * @return
+     */
+    @Override
+    public UserInfoRespDto userInfo(String userId) {
+        User user = userMapper.selectById(userId);
+        if(user == null){
+            throw new ServiceException("用户不存在");
+        }
+
+        // 创建要返回的用户信息对象
+        UserInfoRespDto dto = new UserInfoRespDto();
+        dto.setUserId(userId);
+        dto.setNickName(user.getNickName());
+        dto.setStatus(user.getStatus());
+        dto.setJoinDate(user.getCreateTime());
+        dto.setJoinDays(DateTimeUtils.getDaysUntilNow(user.getCreateTime()));
+
+        dto.setTagNums(0);
+        dto.setMemoNums(0);
+
+        return dto;
+    }
 }

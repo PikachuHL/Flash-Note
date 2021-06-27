@@ -2,6 +2,7 @@ package cn.hellopika.flashnote.service;
 
 import cn.hellopika.flashnote.model.dto.*;
 import cn.hellopika.flashnote.model.entity.User;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -43,4 +44,17 @@ public interface UserService {
      * @param dto
      */
     void resetPwd(ForgetPwdResetPwdDto dto);
+
+    /**
+     * 用户设置
+     * @param dto
+     */
+    void userSetting(UserSettingDto dto);
+
+    /**
+     * 用户信息
+     * @param userid
+     * @return
+     */
+    UserInfoRespDto userInfo(String userid);
 }

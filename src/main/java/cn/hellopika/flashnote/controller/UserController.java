@@ -9,13 +9,11 @@ import cn.hellopika.flashnote.service.UserService;
 import cn.hellopika.flashnote.util.result.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.net.AprEndpoint;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -112,9 +110,31 @@ public class UserController {
         return ApiResult.success();
     }
 
+    /**
+     * 用户设置
+     * @return
+     */
+    @PostMapping("/user/setting")
+    public ApiResult userSetting(@RequestBody UserSettingDto dto){
+        // 从登录信息中获取 用户Id
+        String userId = StpUtil.getLoginIdAsString();
+        dto.setUserId(userId);
 
+        userService.userSetting(dto);
+        return ApiResult.success();
+    }
 
+    /**
+     * 用户信息
+     * @return
+     */
+    @PostMapping("/user/info")
+    public ApiResult userInfo(){
+        // 从登录信息中获取 用户Id
+        String userId = StpUtil.getLoginIdAsString();
 
-
+        UserInfoRespDto dto = userService.userInfo(userId);
+        return ApiResult.success(dto);
+    }
 
 }

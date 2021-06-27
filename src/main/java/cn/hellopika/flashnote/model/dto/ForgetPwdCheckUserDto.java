@@ -5,12 +5,12 @@ import lombok.Data;
 /**
  * @date: 2021/6/17
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 忘记密码：验证用户使用的 dto
  **/
 @Data
 public class ForgetPwdCheckUserDto {
 
-    String captchaToken;
-    String phone;
-    String imageCaptchaText;
+    private String captchaToken;
+    private String phone;
+    private String imageCaptchaText;
 }
