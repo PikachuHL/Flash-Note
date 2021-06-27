@@ -1,8 +1,7 @@
 package cn.hellopika.flashnote.service;
 
-import cn.hellopika.flashnote.model.dto.UserLoginDto;
+import cn.hellopika.flashnote.model.dto.*;
 import cn.hellopika.flashnote.model.entity.User;
-import cn.hellopika.flashnote.model.dto.UserRegisterDto;
 
 import java.util.List;
 
@@ -15,14 +14,33 @@ public interface UserService {
 
     /**
      * 用户注册
-     * @param userRegisterDto
+     * @param dto
      */
-    void userRegister(UserRegisterDto userRegisterDto);
+    void userRegister(UserRegisterDto dto);
 
     /**
      * 用户登录
-     * @param userLoginDto
+     * @param dto
      * @return
      */
-    User login(UserLoginDto userLoginDto);
+    User login(UserLoginDto dto);
+
+    /**
+     * 忘记密码1：检查用户是否存在
+     * @param dto
+     */
+    String checkUser(ForgetPwdCheckUserDto dto);
+
+    /**
+     * 忘记密码2：验证短信验证码
+     * @param dto
+     * @return
+     */
+    String checkVerifyCode(ForgetPwdCheckVerifyCodeDto dto);
+
+    /**
+     * 忘记密码3：重设密码
+     * @param dto
+     */
+    void resetPwd(ForgetPwdResetPwdDto dto);
 }

@@ -2,12 +2,15 @@ package cn.hellopika.flashnote.controller;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hellopika.flashnote.model.dto.UserLoginDto;
+import cn.hellopika.flashnote.exception.ServiceException;
+import cn.hellopika.flashnote.model.dto.*;
 import cn.hellopika.flashnote.model.entity.User;
-import cn.hellopika.flashnote.model.dto.UserRegisterDto;
 import cn.hellopika.flashnote.service.UserService;
 import cn.hellopika.flashnote.util.result.ApiResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @date: 2021/6/6
@@ -29,28 +33,31 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RedissonClient redissonClient;
+
     /**
      * 用户注册
-     * @param userRegisterDto
+     * @param dto
      * @return
      */
     @PostMapping("/userRegister")
-    public ApiResult userRegister(@RequestBody UserRegisterDto userRegisterDto){
-        userService.userRegister(userRegisterDto);
+    public ApiResult userRegister(@RequestBody UserRegisterDto dto){
+        userService.userRegister(dto);
         return ApiResult.success();
     }
 
     /**
      * 用户登录
-     * @param userLoginDto
+     * @param dto
      * @return
      */
     @PostMapping("/login")
-    public ApiResult userLogin(@RequestBody UserLoginDto userLoginDto){
-        User user = userService.login(userLoginDto);
+    public ApiResult userLogin(@RequestBody UserLoginDto dto){
+        User user = userService.login(dto);
 
         // 登录成功，返回给用户 Token
-        StpUtil.setLoginId(user.getId(), userLoginDto.getDevice());
+        StpUtil.setLoginId(user.getId(), dto.getDevice());
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 
         return ApiResult.success(tokenInfo);
@@ -67,6 +74,46 @@ public class UserController {
         StpUtil.logout();
         return ApiResult.success();
     }
+
+
+
+    /**
+     * 忘记密码1：验证用户是否存在
+     * @param dto
+     * @return
+     */
+    @PostMapping("/forget/checkUser")
+    public ApiResult checkUser(@RequestBody ForgetPwdCheckUserDto dto){
+
+        String token = userService.checkUser(dto);
+        return ApiResult.success(token);
+    }
+
+
+    /**
+     * 忘记密码2：验证短信验证码
+     * @param dto
+     * @return
+     */
+    @PostMapping("/forget/checkVerifyCode")
+    public ApiResult checkVerifyCode(@RequestBody ForgetPwdCheckVerifyCodeDto dto){
+        String token = userService.checkVerifyCode(dto);
+        return ApiResult.success(token);
+    }
+
+    /**
+     * 忘记密码3：重设密码
+     * @param dto
+     * @return
+     */
+    @PostMapping("/forget/resetPwd")
+    public ApiResult resetPwd(@RequestBody ForgetPwdResetPwdDto dto){
+        userService.resetPwd(dto);
+        return ApiResult.success();
+    }
+
+
+
 
 
 

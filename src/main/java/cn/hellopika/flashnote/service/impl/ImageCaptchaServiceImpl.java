@@ -4,6 +4,7 @@ import cn.hellopika.flashnote.exception.ServiceException;
 import cn.hellopika.flashnote.model.dto.ImageCaptchaRespDto;
 import cn.hellopika.flashnote.service.ImageCaptchaService;
 import cn.hellopika.flashnote.util.ImageCaptcha;
+import cn.hellopika.flashnote.util.SysConst;
 import io.netty.handler.codec.base64.Base64Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -45,10 +46,10 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
             byte[] bytes = outputStream.toByteArray();
             outputStream.flush();
 
-            String imageBase64 = "data:image/jpg;bash64, " + Base64.encodeBase64String(bytes);
+            String imageBase64 = "data:image/jpg;base64, " + Base64.encodeBase64String(bytes);
 
             String captchaToken = UUID.randomUUID().toString();  // 获取一个 UUID 作为验证码的 token
-            RBucket<String> imageCaptchaTextCache = redissonClient.getBucket("imageCaptcha:text:" + captchaToken);
+            RBucket<String> imageCaptchaTextCache = redissonClient.getBucket(SysConst.RedisPrefix.IMAGE_CAPTCHA_TEXT + captchaToken);
             imageCaptchaTextCache.set(text, 10, TimeUnit.MINUTES);  // 把图片验证码的文本放到redis中
 
             log.info("图片验证码生成成功：{}", text);
