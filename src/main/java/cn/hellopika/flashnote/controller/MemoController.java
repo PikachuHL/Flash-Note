@@ -7,6 +7,7 @@ import cn.hellopika.flashnote.model.dto.response.CreateMemoRespDto;
 import cn.hellopika.flashnote.model.entity.Memo;
 import cn.hellopika.flashnote.model.entity.Tag;
 import cn.hellopika.flashnote.service.MemoService;
+import cn.hellopika.flashnote.util.QiniuUtils;
 import cn.hellopika.flashnote.util.result.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class MemoController {
 
     @Autowired
     private MemoService memoService;
+
+    @Autowired
+    private QiniuUtils qiniuUtils;
 
     /**
      * 创建笔记
@@ -78,12 +82,28 @@ public class MemoController {
     }
 
 
+    /**
+     * 编辑笔记
+     * @param dto
+     * @return
+     */
     @PostMapping("/edit")
     public ApiResult editMemo(@RequestBody MemoEditDto dto){
         String userId = StpUtil.getLoginIdAsString();
         dto.setUserId(userId);
         memoService.editMemo(dto);
         return ApiResult.success();
+    }
+
+    /**
+     * 获取上传图片需要的授权信息
+     * @return
+     */
+    @PostMapping("/img/getToken")
+    public ApiResult getImgUpToken(){
+        String upToken = qiniuUtils.getImgUpToken();
+
+        return ApiResult.success(upToken);
     }
 
 
