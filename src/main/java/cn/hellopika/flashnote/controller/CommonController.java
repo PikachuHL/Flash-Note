@@ -1,19 +1,13 @@
 package cn.hellopika.flashnote.controller;
 
-import cn.hellopika.flashnote.model.dto.ImageCaptchaRespDto;
-import cn.hellopika.flashnote.model.dto.SendVerifyCodeDto;
+import cn.hellopika.flashnote.model.dto.response.ImageCaptchaRespDto;
+import cn.hellopika.flashnote.model.dto.request.SendVerifyCodeDto;
 import cn.hellopika.flashnote.service.ImageCaptchaService;
 import cn.hellopika.flashnote.service.SendSmsService;
-import cn.hellopika.flashnote.util.ImageCaptcha;
 import cn.hellopika.flashnote.util.result.ApiResult;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RBucket;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.image.BufferedImage;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @date: 2021/6/10

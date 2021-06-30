@@ -1,6 +1,6 @@
 package cn.hellopika.flashnote.service;
 
-import cn.hellopika.flashnote.model.dto.SendVerifyCodeDto;
+import cn.hellopika.flashnote.model.dto.request.SendVerifyCodeDto;
 
 /**
  * @date: 2021/6/6

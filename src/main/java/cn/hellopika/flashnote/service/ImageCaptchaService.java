@@ -1,6 +1,6 @@
 package cn.hellopika.flashnote.service;
 
-import cn.hellopika.flashnote.model.dto.ImageCaptchaRespDto;
+import cn.hellopika.flashnote.model.dto.response.ImageCaptchaRespDto;
 
 /**
  * @date: 2021/6/17

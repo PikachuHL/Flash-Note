@@ -1,10 +1,8 @@
 package cn.hellopika.flashnote.service;
 
-import cn.hellopika.flashnote.model.dto.*;
+import cn.hellopika.flashnote.model.dto.request.*;
+import cn.hellopika.flashnote.model.dto.response.UserInfoRespDto;
 import cn.hellopika.flashnote.model.entity.User;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * @date: 2021/6/6
@@ -52,7 +50,7 @@ public interface UserService {
     void userSetting(UserSettingDto dto);
 
     /**
-     * 用户信息
+     * 用户详细信息
      * @param userid
      * @return
      */

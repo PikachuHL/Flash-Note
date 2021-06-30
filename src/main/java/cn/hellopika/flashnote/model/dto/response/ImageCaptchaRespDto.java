@@ -1,4 +1,4 @@
-package cn.hellopika.flashnote.model.dto;
+package cn.hellopika.flashnote.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * @date: 2021/6/6
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 用户表的实体类
  **/
 
 @Data

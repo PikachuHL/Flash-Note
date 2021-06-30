@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hellopika.flashnote.mapper.MemoMapper">
+
+    <select id="getMemosByTag" resultType="cn.hellopika.flashnote.model.entity.Memo">
+        select
+            m.*
+        from memo as m
+            inner join memo_tag as mt on mt.memo_id = m.id
+            inner join tag as t on t.id = mt.tag_id
+        where
+            t.tag_name = #{tagName} and
+            t.user_id = #{userId}
+    </select>
+
+</mapper>

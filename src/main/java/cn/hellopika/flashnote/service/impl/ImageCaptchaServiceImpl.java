@@ -1,11 +1,10 @@
 package cn.hellopika.flashnote.service.impl;
 
 import cn.hellopika.flashnote.exception.ServiceException;
-import cn.hellopika.flashnote.model.dto.ImageCaptchaRespDto;
+import cn.hellopika.flashnote.model.dto.response.ImageCaptchaRespDto;
 import cn.hellopika.flashnote.service.ImageCaptchaService;
 import cn.hellopika.flashnote.util.ImageCaptcha;
 import cn.hellopika.flashnote.util.SysConst;
-import io.netty.handler.codec.base64.Base64Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.redisson.api.RBucket;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;

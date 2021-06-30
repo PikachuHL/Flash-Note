@@ -1,7 +1,7 @@
 package cn.hellopika.flashnote.service.impl;
 
-import cn.hellopika.flashnote.model.dto.SendSmsDto;
-import cn.hellopika.flashnote.model.dto.SendVerifyCodeDto;
+import cn.hellopika.flashnote.model.dto.request.SendSmsDto;
+import cn.hellopika.flashnote.model.dto.request.SendVerifyCodeDto;
 import cn.hellopika.flashnote.service.SendSmsService;
 import cn.hellopika.flashnote.util.SysConst;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @date: 2021/6/6
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 发送短信验证码的 业务层实现类
  **/
 @Service
 @Slf4j

@@ -20,7 +20,11 @@ public class DateTimeUtils {
         return DateTime.now().toString("yyyy-MM-dd HH:mm:ss");
     }
 
-
+    /**
+     * 获取传入的日期到现在的天数
+     * @param createTime
+     * @return
+     */
     public static int getDaysUntilNow(String createTime){
         DateTime now = DateTime.now();
         // 把日期字符串转换为日期类型

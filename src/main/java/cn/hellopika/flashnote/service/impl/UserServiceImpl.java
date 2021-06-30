@@ -2,7 +2,8 @@ package cn.hellopika.flashnote.service.impl;
 
 import cn.hellopika.flashnote.exception.ServiceException;
 import cn.hellopika.flashnote.mapper.UserMapper;
-import cn.hellopika.flashnote.model.dto.*;
+import cn.hellopika.flashnote.model.dto.request.*;
+import cn.hellopika.flashnote.model.dto.response.UserInfoRespDto;
 import cn.hellopika.flashnote.model.entity.User;
 import cn.hellopika.flashnote.service.UserService;
 import cn.hellopika.flashnote.util.DateTimeUtils;
@@ -238,7 +239,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 用户信息
+     * 用户详细信息
      * @param userId
      * @return
      */

@@ -2,21 +2,15 @@ package cn.hellopika.flashnote.controller;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hellopika.flashnote.exception.ServiceException;
-import cn.hellopika.flashnote.model.dto.*;
+import cn.hellopika.flashnote.model.dto.request.*;
+import cn.hellopika.flashnote.model.dto.response.UserInfoRespDto;
 import cn.hellopika.flashnote.model.entity.User;
 import cn.hellopika.flashnote.service.UserService;
 import cn.hellopika.flashnote.util.result.ApiResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.net.AprEndpoint;
-import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @date: 2021/6/6
@@ -125,7 +119,7 @@ public class UserController {
     }
 
     /**
-     * 用户信息
+     * 用户详细信息
      * @return
      */
     @PostMapping("/user/info")

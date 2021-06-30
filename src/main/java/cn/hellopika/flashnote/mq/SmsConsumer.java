@@ -1,6 +1,6 @@
 package cn.hellopika.flashnote.mq;
 
-import cn.hellopika.flashnote.model.dto.SendSmsDto;
+import cn.hellopika.flashnote.model.dto.request.SendSmsDto;
 import cn.hellopika.flashnote.util.api.SmsApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.Queue;

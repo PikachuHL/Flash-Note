@@ -1,11 +1,11 @@
-package cn.hellopika.flashnote.model.dto;
+package cn.hellopika.flashnote.model.dto.response;
 
 import lombok.Data;
 
 /**
  * @date: 2021/6/27
  * @author: pikachu
- * @description: 返回用户信息使用的 dto
+ * @description: 返回用户详细信息使用的 dto
  **/
 
 @Data
