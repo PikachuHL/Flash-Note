@@ -1,6 +1,9 @@
 package cn.hellopika.flashnote.model.dto.request;
 
+import cn.hellopika.flashnote.model.entity.Image;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @date: 2021/6/29
@@ -13,4 +16,9 @@ public class MemoEditDto {
     private String content;
     private String userId;
     private String device;
+
+    /**
+     * 笔记中的图片
+     */
+    private List<Image> imgs;
 }

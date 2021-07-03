@@ -1,28 +1,30 @@
 package cn.hellopika.flashnote.service.impl;
 
 import cn.hellopika.flashnote.exception.ServiceException;
+import cn.hellopika.flashnote.mapper.ImageMapper;
 import cn.hellopika.flashnote.mapper.MemoMapper;
 import cn.hellopika.flashnote.mapper.MemoTagMapper;
 import cn.hellopika.flashnote.mapper.TagMapper;
 import cn.hellopika.flashnote.model.dto.request.CreateMemoDto;
 import cn.hellopika.flashnote.model.dto.request.MemoEditDto;
 import cn.hellopika.flashnote.model.dto.response.CreateMemoRespDto;
+import cn.hellopika.flashnote.model.entity.Image;
 import cn.hellopika.flashnote.model.entity.Memo;
 import cn.hellopika.flashnote.model.entity.MemoTag;
 import cn.hellopika.flashnote.model.entity.Tag;
 import cn.hellopika.flashnote.service.MemoService;
 import cn.hellopika.flashnote.util.DateTimeUtils;
+import cn.hellopika.flashnote.util.QiniuUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +43,10 @@ public class MemoServiceImpl implements MemoService {
     private TagMapper tagMapper;
     @Autowired
     private MemoTagMapper memoTagMapper;
+    @Autowired
+    private ImageMapper imageMapper;
+    @Autowired
+    private QiniuUtils qiniuUtils;
 
     /**
      * 创建笔记
@@ -66,7 +72,16 @@ public class MemoServiceImpl implements MemoService {
         // 保存笔记对应的标签
         List<String> tagNames = saveMemoTags(memo);
 
-        return new CreateMemoRespDto(memo.getId(), memo.getContent(), memo.getCreateTime(), memo.getDevice(), memo.getParentId(), tagNames);
+        // 保存笔记中的图片
+        List<Image> images = new ArrayList<>();
+        for (Image img:dto.getImages()) {
+            img.setMemoId(memo.getId());
+            imageMapper.insert(img);
+            images.add(img);
+        }
+
+        // 返回新建的笔记详情
+        return new CreateMemoRespDto(memo.getId(), memo.getContent(), memo.getCreateTime(), memo.getDevice(), memo.getParentId(), tagNames, images);
 
 
     }
@@ -147,15 +162,18 @@ public class MemoServiceImpl implements MemoService {
      */
     @Override
     public List<Memo> getMemos(String userId, String tagName) {
-        List<Memo> memos = new ArrayList<>();
-        if (StringUtils.isNotEmpty(tagName)){
-            memos = memoMapper.getMemosByTag(userId, "#" + tagName);
-        }else {
-            // 如果不选标签，就是查询所有
-            memos = memoMapper.selectList(new QueryWrapper<Memo>().eq("user_id", userId));
-        }
+//        List<Memo> memos = new ArrayList<>();
+//        if (StringUtils.isNotEmpty(tagName)){
+//            memos = memoMapper.getMemosByTag(userId, "#" + tagName);
+//        }else {
+//            // 如果不选标签，就是查询所有
+//            memos = memoMapper.selectList(new QueryWrapper<Memo>().eq("user_id", userId));
+//        }
+//
+//        return memos;
 
-        return memos;
+        return memoMapper.getMemos(userId, StringUtils.isNotEmpty(tagName) ? "#"+tagName : "");
+
     }
 
     /**
@@ -180,6 +198,9 @@ public class MemoServiceImpl implements MemoService {
 
         // 删除笔记对应的标签
         delMemoTags(memoId);
+
+        // 删除笔记中的图片
+        delMemoImgs(memoId);
     }
 
     /**
@@ -200,6 +221,24 @@ public class MemoServiceImpl implements MemoService {
     }
 
     /**
+     * 删除笔记中的图片，同时从云存储中删除
+     * @param memoId
+     */
+    public void delMemoImgs(String memoId){
+
+        List<Image> images = imageMapper.selectList(new QueryWrapper<Image>().eq("memo_id", memoId));
+        for (Image img:images) {
+            // 删除云存储中的图片
+            qiniuUtils.delImg(img.getImgKey());
+
+            // 删除数据库中的记录
+            imageMapper.deleteById(img.getId());
+        }
+
+    }
+
+
+    /**
      * 编辑笔记
      * TODO 确定edit返回的数据
      * @param dto
@@ -207,7 +246,9 @@ public class MemoServiceImpl implements MemoService {
     @Override
     @Transactional
     public void editMemo(MemoEditDto dto) {
+        // 拿到要修改的笔记
         Memo memo = memoMapper.selectById(dto.getMemoId());
+
         if(memo == null){
             throw new ServiceException("笔记不存在");
         }
@@ -224,5 +265,35 @@ public class MemoServiceImpl implements MemoService {
 
         // 重建笔记的所有标签
         saveMemoTags(memo);
+
+
+        // 拿到修改前笔记中的图片列表
+        List<Image> beforeImages = imageMapper.selectList(new QueryWrapper<Image>().select("name", "img_key", "url").eq("memo_id", memo.getId()));
+        // 获取修改后笔记中的图片列表
+        List<Image> afterImages = dto.getImgs();
+
+        // 取两个集合的交集
+        List<Image> union = (List) CollectionUtils.union(beforeImages, afterImages);
+        // 交集与修改前列表取差集，获得要增加的图片
+        List<Image> addList = (List)CollectionUtils.subtract(union, beforeImages);
+        // // 交集与修改后列表取差集，获得要删除的图片
+        List<Image> removeList = (List)CollectionUtils.subtract(union, afterImages);
+
+        if(addList != null){
+            for (Image img:addList) {
+                img.setMemoId(memo.getId());
+                imageMapper.insert(img);
+            }
+        }
+
+        if (removeList != null){
+            for (Image img:removeList){
+                // 删除云存储中的图片
+                qiniuUtils.delImg(img.getImgKey());
+                // 删除数据库中的图片
+                imageMapper.delete(new QueryWrapper<Image>().eq("img_key", img.getImgKey()));
+
+            }
+        }
     }
 }

@@ -14,6 +14,9 @@ import java.util.List;
  **/
 @Repository
 public interface MemoMapper extends BaseMapper<Memo> {
-    List<Memo> getMemosByTag(String userId, String tagName);
+
+    // List<Memo> getMemosByTag(String userId, String tagName);
+
+    List<Memo> getMemos(String userId, String tagName);
 
 }

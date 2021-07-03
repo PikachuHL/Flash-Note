@@ -5,15 +5,39 @@
 
 <mapper namespace="cn.hellopika.flashnote.mapper.MemoMapper">
 
-    <select id="getMemosByTag" resultType="cn.hellopika.flashnote.model.entity.Memo">
+    <resultMap id="memoImgMap" type="cn.hellopika.flashnote.model.entity.Memo">
+        <id property="id" column="id"></id>
+        <result property="content" column="content"></result>
+        <result property="parentId" column="parent_id"></result>
+        <result property="createTime" column="create_time"></result>
+        <result property="device" column="device"></result>
+        <result property="userId" column="user_id"></result>
+        <collection property="imgs" javaType="List" ofType="cn.hellopika.flashnote.model.entity.Image">
+            <id property="id" column="img_id"></id>
+            <result property="memoId" column="memo_id"></result>
+            <result property="name" column="name"></result>
+            <result property="imgKey" column="img_key"></result>
+            <result property="url" column="url"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getMemos" resultMap="memoImgMap">
         select
-            m.*
+            m.*,
+            i.id as img_id, i.memo_id, i.name, i.img_key, i.url
         from memo as m
-            inner join memo_tag as mt on mt.memo_id = m.id
-            inner join tag as t on t.id = mt.tag_id
+            <if test="tagName!=null and tagName!=''">
+                inner join memo_tag as mt on mt.memo_id = m.id
+                inner join tag as t on t.id = mt.tag_id
+            </if>
+            left join image as i on m.id = i.memo_id
         where
-            t.tag_name = #{tagName} and
-            t.user_id = #{userId}
+            <if test="tagName!=null and tagName!=''">
+                t.tag_name = #{tagName} and
+                t.user_id = #{userId} and
+            </if>
+            m.user_id = #{userId}
     </select>
+
 
 </mapper>

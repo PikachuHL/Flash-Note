@@ -1,5 +1,6 @@
 package cn.hellopika.flashnote.model.dto.response;
 
+import cn.hellopika.flashnote.model.entity.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,5 +19,14 @@ public class CreateMemoRespDto {
     String createTime;
     String device;
     String parentId;
+
+    /**
+     * 笔记的标签
+     */
     List<String> tags;
+
+    /**
+     * 笔记中的图片
+     */
+    List<Image> images;
 }

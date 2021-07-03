@@ -44,5 +44,9 @@ public interface MemoService {
      */
     void delMemo(String userId, String memeId);
 
+    /**
+     * 编辑笔记
+     * @param dto
+     */
     void editMemo(MemoEditDto dto);
 }
