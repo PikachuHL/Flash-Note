@@ -6,6 +6,7 @@ import cn.hellopika.flashnote.model.dto.request.*;
 import cn.hellopika.flashnote.model.dto.response.UserInfoRespDto;
 import cn.hellopika.flashnote.model.entity.User;
 import cn.hellopika.flashnote.service.UserService;
+import cn.hellopika.flashnote.service.WeChatService;
 import cn.hellopika.flashnote.util.result.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
@@ -24,9 +25,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
-    private RedissonClient redissonClient;
+    private WeChatService weChatService;
+
 
     /**
      * 用户注册
@@ -129,6 +130,17 @@ public class UserController {
 
         UserInfoRespDto dto = userService.userInfo(userId);
         return ApiResult.success(dto);
+    }
+
+    /**
+     * 获取绑定微信的二维码
+     * @return
+     */
+    @GetMapping("/user/sceneQrCode")
+    public ApiResult getSceneQrCode(){
+        String userId = StpUtil.getLoginIdAsString();
+        String qrCodeUrl = weChatService.sceneQrCode(userId);
+        return ApiResult.success(qrCodeUrl);
     }
 
 }

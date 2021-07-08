@@ -22,5 +22,7 @@ public interface SysConst {
         String FORGET_PASSWORD_SEND_VERIFY_CODE = "forgetpwd:sendverifycode:";
         String FORGET_PASSWORD_RESET = "forgetPwd:resetPwd:";
 
+        String WECHAT_ACCESSTOKEN = "wechat:accessToken";
+
     }
 }

@@ -2,7 +2,7 @@ package cn.hellopika.flashnote.util.api;
 
 
 import cn.hellopika.flashnote.config.SmsConfig;
-import cn.hellopika.flashnote.util.HttpUtil;
+import cn.hellopika.flashnote.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class SmsApi {
         message = encodeUtf(message);  // 短信宝要求字符编码为 UTF-8
 
         String url = "http://api.smsbao.com/sms?u=" + smsConfig.getUsername() + "&p=" + smsConfig.getPassword() + "&m=" + phone + "&c=" + message;
-        String result = HttpUtil.getRequest(url);
+        String result = HttpUtils.sendGet(url);
         log.info(result);
     }
 

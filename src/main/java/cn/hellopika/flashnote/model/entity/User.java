@@ -32,4 +32,7 @@ public class User implements Serializable {
     private String password;
     private String createTime;
     private int status;
+
+    // 绑定的微信用户的openid
+    private String wechatId;
 }
