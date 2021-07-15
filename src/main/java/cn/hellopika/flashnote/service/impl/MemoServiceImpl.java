@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
  * @author: pikachu
  * @description: 笔记功能的 业务层实现类
  **/
+
 @Service
 @Slf4j
 public class MemoServiceImpl implements MemoService {
@@ -64,26 +65,28 @@ public class MemoServiceImpl implements MemoService {
         memo.setDevice(dto.getDevice());
         memo.setCreateTime(DateTimeUtils.getNowString());
         memo.setUserId(userId);
-        if (!(dto.getParentId() == null)) {
+        if ((dto.getParentId() != null)) {
             memo.setParentId(dto.getParentId());
         }
         memoMapper.insert(memo);
+
+        log.info("创建笔记成功 [memoId: {}]", memo.getId());
 
         // 保存笔记对应的标签
         List<String> tagNames = saveMemoTags(memo);
 
         // 保存笔记中的图片
         List<Image> images = new ArrayList<>();
-        for (Image img:dto.getImages()) {
-            img.setMemoId(memo.getId());
-            imageMapper.insert(img);
-            images.add(img);
+        if (dto.getImgs() != null){
+            for (Image img:dto.getImgs()) {
+                img.setMemoId(memo.getId());
+                imageMapper.insert(img);
+                images.add(img);
+            }
+            log.info("笔记 [memoId: {}] 中插入的图片已保存", memo.getId());
         }
-
         // 返回新建的笔记详情
         return new CreateMemoRespDto(memo.getId(), memo.getContent(), memo.getCreateTime(), memo.getDevice(), memo.getParentId(), tagNames, images);
-
-
     }
 
     /**
@@ -95,7 +98,7 @@ public class MemoServiceImpl implements MemoService {
         // 使用jsoup解析笔记内容字符串（笔记内容为html格式）
         String text = Jsoup.parse(memo.getContent()).body().text();
         // 使用正则表达式，提取出内容中的标签名
-        List<String> tagNames = extractTagNames(memo.getContent());
+        List<String> tagNames = extractTagNames(text);
 
         for (String tagName : tagNames) {
             // 判断标签是否存在
@@ -116,6 +119,7 @@ public class MemoServiceImpl implements MemoService {
             memoTagMapper.insert(memoTag);
         }
 
+        log.info("笔记 [memoId: {}] 中的标签 [{}] 已保存", memo.getId(), tagNames.toString());
 
         return tagNames;
     }
@@ -150,6 +154,9 @@ public class MemoServiceImpl implements MemoService {
             String tagName = iter.next().getTagName();
             tagNames.add(tagName);
         }
+
+        log.info("已获取所有标签 [{}]", tagNames.toString());
+
         return tagNames;
     }
 
@@ -171,6 +178,7 @@ public class MemoServiceImpl implements MemoService {
 //        }
 //
 //        return memos;
+        log.info("获取所有笔记");
 
         return memoMapper.getMemos(userId, StringUtils.isNotEmpty(tagName) ? "#"+tagName : "");
 
@@ -195,6 +203,7 @@ public class MemoServiceImpl implements MemoService {
         }
         // 删除笔记
         memoMapper.deleteById(memoId);
+        log.info("笔记 [memoId: {}] 已删除", memoId);
 
         // 删除笔记对应的标签
         delMemoTags(memoId);
@@ -204,8 +213,8 @@ public class MemoServiceImpl implements MemoService {
     }
 
     /**
-     * 删除笔记与标签的关联
-     * 以及 根据判断看是否删除响应标签
+     * 解除笔记与标签的关联
+     * 以及 根据判断看是否删除相应标签
      * @param memoId
      */
     public void delMemoTags(String memoId){
@@ -218,6 +227,7 @@ public class MemoServiceImpl implements MemoService {
             }
             memoTagMapper.deleteById(memoTag.getId());
         }
+        log.info("笔记 [{}] 与相关标签的关联已解除", memoId);
     }
 
     /**
@@ -234,13 +244,12 @@ public class MemoServiceImpl implements MemoService {
             // 删除数据库中的记录
             imageMapper.deleteById(img.getId());
         }
-
+        log.info("笔记 [{}] 中的图片已删除", memoId);
     }
 
 
     /**
      * 编辑笔记
-     * TODO 确定edit返回的数据
      * @param dto
      */
     @Override
@@ -262,7 +271,6 @@ public class MemoServiceImpl implements MemoService {
 
         // 删除该笔记的所有标签
         delMemoTags(memo.getId());
-
         // 重建笔记的所有标签
         saveMemoTags(memo);
 
@@ -295,5 +303,6 @@ public class MemoServiceImpl implements MemoService {
 
             }
         }
+        log.info("笔记 [{}] 已修改", dto.getMemoId());
     }
 }

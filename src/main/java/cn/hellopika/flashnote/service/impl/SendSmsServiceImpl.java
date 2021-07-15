@@ -39,7 +39,7 @@ public class SendSmsServiceImpl implements SendSmsService {
 
         // 如果 verifyCodeSendCache 存在，证明 60秒内发送过验证码，直接抛异常
         if(verifyCodeSendCache.isExists()){
-            log.error("{} 频繁发送验证码，已被拒绝", sendVerifyCodeDto.getPhone());
+            log.info("[{}] 频繁发送验证码，已被拒绝", sendVerifyCodeDto.getPhone());
             throw new RuntimeException("请不要频繁发送验证码");
         }
 
@@ -52,12 +52,12 @@ public class SendSmsServiceImpl implements SendSmsService {
 
         // 根据场景值的不同，调用不同的方法发送短信验证码
         if(StringUtils.equals(sendVerifyCodeDto.getSceneCode(), SendVerifyCodeDto.SEND_VERIFYCODE_REGISTER)){
+            log.info("新用户 [{}] 正在注册，发送了短信验证码 [{}]", sendVerifyCodeDto.getPhone(), verifyCode);
             registerSendSms(verifyCode, sendVerifyCodeDto.getPhone());
         }else if(StringUtils.equals(sendVerifyCodeDto.getSceneCode(), SendVerifyCodeDto.SEND_VERIFYCODE_FORGETPWD)){
+            log.info("用户 [{}] 已忘记密码，计划重置密码，发送了短信验证码 [{}]", sendVerifyCodeDto.getPhone(), verifyCode);
             forgetPwdSendSms(verifyCode, sendVerifyCodeDto.getPhone());
         }
-
-        log.info(verifyCode);
     }
 
     /**

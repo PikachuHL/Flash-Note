@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @date: 2021/6/16
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 用户登录时使用的 dto
  **/
 
 @Data

@@ -28,6 +28,6 @@ public class SmsConsumer {
     @RabbitListener(queuesToDeclare = @Queue("sms_quene"))
     public void sendSms(SendSmsDto sendSmsDto){
         // 调用 API, 发送短信
-        // smsApi.sendSms(sendSmsDto.getPhone(), sendSmsDto.getMessage());
+        smsApi.sendSms(sendSmsDto.getPhone(), sendSmsDto.getMessage());
     }
 }

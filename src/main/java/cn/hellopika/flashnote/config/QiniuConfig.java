@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @date: 2021/6/30
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 上传七牛云相关参数的配置类
  **/
 @Configuration
 @ConfigurationProperties("qiniu")

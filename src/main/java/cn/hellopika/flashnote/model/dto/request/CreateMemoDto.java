@@ -16,5 +16,5 @@ public class CreateMemoDto {
     /**
      * 笔记中的图片
      */
-    private Image[] images;
+    private Image[] imgs;
 }

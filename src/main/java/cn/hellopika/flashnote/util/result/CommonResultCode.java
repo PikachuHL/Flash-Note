@@ -6,7 +6,7 @@ import lombok.ToString;
 /**
  * @date: 2021/6/15
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: result 的枚举类
  **/
 
 @ToString

@@ -1,9 +1,9 @@
 package cn.hellopika.flashnote.exception;
 
 import cn.hellopika.flashnote.util.result.ApiResult;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * @date: 2021/6/16
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @description: 全局异常处理
  **/
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalException {
 
+    @CrossOrigin
     @ExceptionHandler(ServiceException.class)
-    @ResponseBody
     public ApiResult serviceExceptionHandler(ServiceException serviceException){
         return ApiResult.fail(serviceException.getMessage());
     }

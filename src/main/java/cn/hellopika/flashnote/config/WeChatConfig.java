@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @date: 2021/7/3
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 微信开发相关参数的配置类
  **/
 @Data
 @Configuration

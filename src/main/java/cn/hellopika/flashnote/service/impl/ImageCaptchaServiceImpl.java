@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @date: 2021/6/17
  * @author: pikachu
- * @description: TODO 类描述
+ * @description: 获取图片验证码的serivce层实现类
  **/
 
 @Service
@@ -50,7 +50,7 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
             RBucket<String> imageCaptchaTextCache = redissonClient.getBucket(SysConst.RedisPrefix.IMAGE_CAPTCHA_TEXT + captchaToken);
             imageCaptchaTextCache.set(text, 10, TimeUnit.MINUTES);  // 把图片验证码的文本放到redis中
 
-            log.info("图片验证码生成成功：{}", text);
+            log.info("图片验证码 [{}] 生成成功", text);
 
             return new ImageCaptchaRespDto(captchaToken, imageBase64);
         } catch (IOException e) {
