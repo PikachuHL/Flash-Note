@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/flashnote?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&autoReconnect=true
+    username: your_datasource_username
+    password: your_datasource_password
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: your_rabbitmq_username
+    password: your_rabbitmq_password
+    virtual-host: your_virtual_host
+
+
+server:
+  port: 8848

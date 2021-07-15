@@ -1,18 +1,7 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/flashnote?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&autoReconnect=true
-    username: your_datasource_username
-    password: your_datasource_password
-  redis:
-    url: 127.0.0.1
-    port: 6379
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: your_rabbitmq_username
-    password: your_rabbitmq_password
-    virtual-host: your_virtual_host
+  profiles:
+    active: dev
+
   # sa-token配置
   sa-token:
     # token名称 (同时也是cookie名称)
@@ -40,3 +29,16 @@ server:
 sms:
   username: your_sms_username
   password: your_sms_password
+
+qiniu:
+  accessKey:
+  secretKey:
+  bucket:
+  domain:
+
+
+wechat:
+  id: 微信公众号的id
+  token: 自定义的token
+  appId: 微信提供
+  appSecret: 微信提供
